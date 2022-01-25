@@ -1,0 +1,244 @@
+<!--this question div needs to split the screen horizonally with the div answer-->
+<html>
+<head>
+<title>Correcter</title>
+<style>
+body{
+    background-color:#334257;
+ color:rgb(26, 27, 31);
+}
+
+.question {
+    text-align:center;
+    margin-top:13%
+}
+.answer{
+    text-align:center;
+    margin-top:3%
+
+}
+.questioninput {
+
+    border: 1px solid #476072;
+  border-radius: 4px;
+  word-wrap: break-word;
+  max-width:40%;
+  margin-left:30%;
+  font-family: "Noto Sans", sans-serif, serif;
+  font-size:25px;
+  background-color: #B1D0E0;
+}
+
+.answerinput{
+
+    border: 1px solid #476072;
+  border-radius: 4px;
+  word-wrap: break-word;
+  max-width:40%;
+   margin-left:30%;
+   font-family: "Noto Sans", sans-serif, serif;
+  font-size:25px;
+  background-color: #B1D0E0;
+}
+
+.button {
+  position: relative;
+  background-color: #B1D0E0;
+  border: none;
+  font-size: 25px;
+  padding: 15px;
+  width: 200px;
+  text-align: center;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 8px;
+  color:rgb(26, 27, 31);
+}
+
+.button:after {
+  content: "";
+  background: #6998AB;
+  display: block;
+  position: absolute;
+  padding-top: 300%;
+  padding-left: 350%;
+  margin-left: -20px !important;
+  margin-top: -120%;
+  opacity: 0;
+  transition: all 0.8s
+}
+
+.button:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #1A374D;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+ 
+  width: 40%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+</style>    
+</head>
+<body>
+    <div><svg style="margin-left:98.7%; cursor:pointer" class="settings" id="myBtn" mlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"/></svg></div>
+
+    <div id="question" class="question">
+        <h1 style="font-family:sans-serif, serif; font-size:25px;">Question:</h1>
+        <!--an input box with an id of question -->
+        <div id="questioninput" class="questioninput" contenteditable placeholder="Question">What is your name?</div>
+    
+    </div>    
+    
+    
+    <div id="answer" class="answer">
+    
+        <!--an input box with an id of question-->
+        <h1 style="font-family:sans-serif, serif; font-size:25px;">Answer:</h1>
+        <div id="answerinput" class="answerinput" contenteditable placeholder="Answer">Carter McKAI</div>
+        <p style='font-family:sans-serif, serif; font-size:25px;'>Do you want to keep this question? <input type="checkbox" id='keep' checked></p> 
+        <button class="button" style="margin-top:30px; display:none" id="download" onclick="download()">Download</button>
+        <button class="button" style="margin-top:30px" id="next" onclick="loadjson()">Next</button>
+    
+    
+    </div> 
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Load your JSON file</p><input type="file" id="json1" onchange="loadjson()">
+        </div>
+      
+      </div>   
+
+    
+    
+    <script>
+        i = 0;
+
+        var correctedjson = [];
+
+        async function loadjson(){
+            var json1 = document.getElementById("json1").files[0];
+            var json2 = JSON.parse(await json1.text());
+
+            var question = document.getElementById('questioninput');
+            var answer = document.getElementById('answerinput');
+            var keep = document.getElementById('keep');
+      
+
+            if (keep.checked){
+                var json = {
+                    "question": question.innerHTML,
+                    "answer": answer.innerHTML
+                }
+                correctedjson.push(json);
+                console.log(correctedjson);
+            
+
+            }
+            if (i < json2.length){
+                question.innerHTML = json2[i].prompt;
+                answer.innerHTML = json2[i].completion;
+                i++;
+            }
+            else{
+                document.getElementById('next').style.display = 'none';
+                document.getElementById('download').style.display = '';
+
+            }
+            
+
+        }
+
+        function download(){
+
+            saveTemplateAsFile('corrected.json', correctedjson)
+        }
+
+        const saveTemplateAsFile = (filename, dataObjToWrite) => {
+            const blob = new Blob([JSON.stringify(dataObjToWrite)], { type: "text/json" });
+            const link = document.createElement("a");
+
+            link.download = filename;
+            link.href = window.URL.createObjectURL(blob);
+            link.dataset.downloadurl = ["text/json", link.download, link.href].join(":");
+
+            const evt = new MouseEvent("click", {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+            });
+
+            link.dispatchEvent(evt);
+            link.remove()
+        };
+
+        
+
+        // Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+    </script>
+</body>
+</html>
